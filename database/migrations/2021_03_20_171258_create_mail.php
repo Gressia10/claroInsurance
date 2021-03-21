@@ -19,7 +19,7 @@ class CreateMail extends Migration
             $table->string('subject', 100)->nullable(false);
             $table->string('text')->default('');
             $table->boolean('status')->nullable(false)->default(false);
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
 
             $table->unsignedBigInteger('id_user');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');

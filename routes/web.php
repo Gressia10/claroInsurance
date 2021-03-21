@@ -25,8 +25,7 @@ Route::post('adminLogin', 'App\Http\Controllers\AdminController@adminLogin')->na
 Route::post('searchAdmin', 'App\Http\Controllers\AdminController@search')->name('admin.search');
 
 Route::resource('admin', App\Http\Controllers\AdminController::class);
-
-
+Route::resource('mail', App\Http\Controllers\MailController::class);
 
 Auth::routes();
 

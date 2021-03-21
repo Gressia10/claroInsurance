@@ -14,7 +14,11 @@ class MailController extends Controller
      */
     public function index()
     {
-        //
+        $mails = Mail::orderBy('id')->offset(0)->limit(10)->get();
+        $total = Mail::paginate(10)->total();
+        $actual = 1;
+
+        return view('mail.index', compact('mails', 'total', 'actual'));
     }
 
     /**
@@ -24,7 +28,9 @@ class MailController extends Controller
      */
     public function create()
     {
-        //
+        $data = new \stdClass();
+        $data -> status=0;
+        return view('mail.create', compact('data'));
     }
 
     /**

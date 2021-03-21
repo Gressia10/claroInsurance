@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Mail extends Model
 {
     use HasFactory;
+
+    protected $table = 'mail';
+
+    protected $fillable = [
+        'to_mail',
+        'subject',
+        'text',
+        'status'
+    ];
 }
