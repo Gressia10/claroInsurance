@@ -18,7 +18,7 @@ class BookSeeder extends Seeder
     {
         DB::table('users')->insert([
             'name' => Str::random(10),
-            'email' => Str::random(10).'@gmail.com',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
             'type' => 1,
             'date' => ('1990-10-10')
