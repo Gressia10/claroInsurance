@@ -20,10 +20,12 @@ Route::get('/', function () {
 Route::get('adminLogin', function(){
     return view('admin.admin');
 });
-// Route::post('/products', 'ProductController::store')->name('addProducts');
+
 Route::post('adminLogin', 'App\Http\Controllers\AdminController@adminLogin')->name('admin.adminLogin');
+Route::post('searchAdmin', 'App\Http\Controllers\AdminController@search')->name('admin.search');
 
 Route::resource('admin', App\Http\Controllers\AdminController::class);
+
 
 
 Auth::routes();

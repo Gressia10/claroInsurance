@@ -7,25 +7,42 @@
                 <h2>Admin Panel</h2>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" href="" title="Create a product"> <i class="fas fa-plus-circle"></i>
-                    </a>
+                <a class="btn btn-primary" href="{{url('') }}" title="Create a product">Logut</i>
+                </a>
             </div>
         </div>
     </div>
-
+    <br>
+    <br>
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
             <p></p>
         </div>
     @endif
-    <select name="option" id="option">
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-    </select>
-    <button>></button>
-    <button><</button>
+    <div>
+        <form action="/searchAdmin" method="POST">
+            @csrf
+            <div>
+                <input id="search" value="" name="search" type="text" placeholder="Search"></input>
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="{{route('admin.create') }}" title="Create a product"> <i class="fas fa-plus-circle"></i>
+                    </a>
+                </div>
+            </div>
+            <br>
+            @if($total>1)
+                Current: {{$actual}}
+                Select the Page
+                <select name="page" id="page" type="sumit">
+                    @for ($i = 1; $i <= ceil($total/10); $i++)
+                        <option value="{{$i}}">{{$i}}</option>
+                    @endfor
+                </select>
+                <button class="btn btn-primary" type="submit" onclick="{{$actual-1}}">Change</button>
+            @endif
+        </form>
+    </div>
     <table class="table table-bordered table-responsive-lg">
     
         <tr>
@@ -42,7 +59,12 @@
             <tr>
                 <td>{{$user->id}}</td>
                 <td>{{$user->name}}</td>
-                <td>{{$user->type}}</td>
+                @if ($user->type==0)
+                    <td>User</td>
+                @else
+                    <td>Admin</td>
+                @endif
+                
                 <td>{{$user->email}}</td>
                 <td>{{$user->number}}</td>
                 <td>{{$user->ci}}</td>

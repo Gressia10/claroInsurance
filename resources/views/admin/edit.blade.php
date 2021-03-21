@@ -51,8 +51,8 @@
                 <div class="form-group">
                     <strong>Type</strong>
                     <select name="type" id="type">
-                        <option value="0">User(0)</option>
-                        <option value="1">Admin(1)</option>
+                        <option value="0">User</option>
+                        <option value="1">Admin</option>
                     </select>
                 </div>
             </div>

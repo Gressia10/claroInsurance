@@ -18,65 +18,28 @@ class AdminController extends Controller
      */
     public function index()
     {
-        // $users = DB::table('users')->get();
-        
-        // $datatable = DataTables::of($users)
-		// 	->addColumn('id', function ($users) {
-		// 		return $users['id'];
-		// 	})
-		// 	->addColumn('name', function ($users) {
-		// 		return $users['name'];
-		// 	})
-		// 	->addColumn('type', function ($users) {
-		// 		return $users['type'];
-		// 	})
-		// 	->addColumn('email', function ($users) {
-		// 		return $users['email'];
-		// 	})
-		// 	->addColumn('number', function ($users) {
-		// 		return $users['number'];
-		// 	})
-		// 	->addColumn('ci', function ($users) {
-		// 		return $users['ci'];
-		// 	})
-		// 	->addColumn('date', function ($users) {
-		// 		return $users['date'];
-		// 	});
-		// 	$columns = ['id', 'name', 'type', 'email',  'number', 'ci', 'date'];
-		// 	$base = new DataTableBase($users, $datatable, $columns,'UsersRequestDetail');
-		// 	return $base->render(null);
 
-        //     return view('admin.index', compact($base));
+        $users = User::orderBy('id')->offset(0)->limit(10)->get();
+        $total = User::paginate(10)->total();
+        $actual = 1;
 
-
-        // $usersData = $users->map(
-		// 	function ($item) use ($users) {
-		// 		$return_data = [
-		// 			'id' => $item['driver_id'],
-		// 			'name' => $item ['name'],
-		// 			'type' => $item['type']=0?'User':'Admin',
-		// 			'email' => $item['email'],
-		// 			'number' => $item['number'],
-		// 			'ci' => $item['ci']	,
-		// 			'date' => $item['date']	,
-                    
-		// 		];
-		// 		return $return_data;
-		// 	}
-		// );
-        $users = User::latest()->paginate(5);
-
-        return view('admin.index', compact('users'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+        return view('admin.index', compact('users', 'total', 'actual'));
     }
 
     public function search(Request $request)
     {
-        $user = DB::table('users')
-            ->where('email', '=', $request->email)
-            ->where('password', '=', Hash::make($request->password))
-            ->where('type', '=', 1)
-            ->get();
+        $offset = ($request->page-1)*10;
+        $users = User::where('name', 'LIKE', "%{$request->search}%")
+        ->orWhere('email', 'LIKE', "%{$request->search}%")
+        ->orWhere('ci', 'LIKE', "%{$request->search}%")
+        ->orWhere('number', 'LIKE', "%{$request->search}%")
+        ->offset($offset)->limit(10)->get();
+
+        $total = User::paginate(5)->total();
+
+        $actual = 2;
+        //return $userSearch;
+        return view('admin.index', compact('users', 'total', 'actual', 'users'));
     }
     public function adminLogin(Request $request)
     {
@@ -87,7 +50,6 @@ class AdminController extends Controller
             ->get();
 
         if($user){
-            // return view('admin.index');
             return redirect()->route('admin.index');
         }else{
             return response()->json([
@@ -105,7 +67,9 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        $data = new \stdClass();
+        $data -> status=0;
+        return view('admin.create', compact('data'));
     }
 
     /**
@@ -116,7 +80,41 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'password' => 'required',
+            'email' => 'required',
+            'date' => 'required',
+            'number' => 'required',
+            'ci' => 'required',
+        ]);
+
+        $email = User::where('email', '=', $request->email)->get();
+
+        if(count($email)>0){
+            $data = new \stdClass();
+            $data -> status=1;
+            $data -> message="Email already exists";
+            return view('admin.create', compact('data'));
+        }
+
+        if($request->password === $request->password2){
+            if (!(preg_match("/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/", $request->password))) {
+                $data = new \stdClass();
+                $data -> status=1;
+                $data -> message="The password must have at least one number, one shift letter and one minuscule letter with minimum 6";
+                return view('admin.create', compact('data'));
+            }else{
+                User::create($request->all());
+                return redirect()->route('admin.index')
+                ->with('success', 'User created successfully.');
+            }   
+        }else{
+            $data = new \stdClass();
+            $data -> status=1;
+            $data -> message="Passwords don't match";
+            return view('admin.create', compact('data'));
+        }
     }
 
     /**
