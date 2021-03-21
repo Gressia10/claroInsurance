@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 
 class BookSeeder extends Seeder
@@ -17,6 +20,8 @@ class BookSeeder extends Seeder
             'name' => Str::random(10),
             'email' => Str::random(10).'@gmail.com',
             'password' => Hash::make('password'),
+            'type' => 1,
+            'date' => ('1990-10-10')
         ]);
     }
 }
