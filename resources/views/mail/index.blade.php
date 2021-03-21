@@ -4,12 +4,15 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>Admin Panel</h2>
+                <h2>Emails</h2>
             </div>
             <div class="pull-right">
                 <a class="btn btn-primary" href="{{ route('logout') }}" title="logour" onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">Logout</i>
                 </a>
+            </div>
+            <div class="pull-right">
+                <a class="btn btn-primary" href="{{route('home') }}" title="Go back"> <i class="fas fa-backward "></i> </a>
             </div>
         </div>
     </div>
@@ -21,11 +24,9 @@
         </div>
     @endif
     <div>
-        <form action="/searchAdmin" method="POST">
+        <form action="/searchMail" method="POST">
             @csrf
             <div>
-                <input id="search" value="" name="search" type="text" placeholder="Search"></input>
-                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
                 <div class="pull-right">
                     <a class="btn btn-primary" href="{{route('mail.create') }}" title="Create a product"> <i class="fas fa-plus-circle"></i>
                     </a>
@@ -53,35 +54,19 @@
             <th>Subject</th>
             <th>Text</th>
             <th>Status</th>
-            <th>Actions</th>
         </tr>
         @foreach ($mails as $mail)
             <tr>
                 <td>{{$mail->id}}</td>
-                <td>{{$mail->id_user}}</td>
-                <td>{{$mail->to}}</td>
+                <td>{{$mail->email}}</td>
+                <td>{{$mail->to_mail}}</td>
                 <td>{{$mail->subject}}</td>
                 <td>{{$mail->text}}</td>
-                @if ($mail->status=0)
-                    <td>Borrador</td>
+                @if ($mail->status==0)
+                    <td>Draft</td>
                 @else
                     <td>Send</td>
                 @endif
-                <td>
-                    <form action="{{ url('admin/'. $mail->id) }}" method="POST">
-
-                        <a href="{{url('admin/'.$mail->id.'/edit')}}">
-                            <i class="fas fa-edit  fa-lg"></i>
-                        </a>
-
-                        @csrf
-                        @method('DELETE')
-
-                        <button type="submit" title="delete" style="border: none; background-color:transparent;">
-                            <i class="fas fa-trash fa-lg text-danger"></i>
-                        </button>
-                    </form>
-                </td>
             </tr>
         @endforeach
     </table>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mail;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MailController extends Controller
 {
@@ -14,11 +16,29 @@ class MailController extends Controller
      */
     public function index()
     {
-        $mails = Mail::orderBy('id')->offset(0)->limit(10)->get();
+        $mails = DB::table('mail')->orderBy('mail.id')->offset(0)->limit(10)
+        ->join('users', 'mail.id_user', '=', 'users.id')
+        ->select('mail.*', 'users.email')
+        ->get();
         $total = Mail::paginate(10)->total();
         $actual = 1;
 
         return view('mail.index', compact('mails', 'total', 'actual'));
+    }
+
+    public function search(Request $request)
+    {
+        $offset = ($request->page-1)*10;
+        $mails = DB::table('mails')->offset($offset)->limit(10)
+        ->join('users', 'mail.id_user', '=', 'users.id')
+        ->select('mail.*', 'users.email')
+        ->get();
+
+        $total = Mail::paginate(5)->total();
+
+        $actual = 2;
+
+        return view('mail.index', compact('mails', 'total', 'actual',));
     }
 
     /**
@@ -41,7 +61,28 @@ class MailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'id_user' => 'required',
+            'to_mail' => 'required',
+            'subject' => 'required',
+            'text' => 'required',
+        ]);
+
+            
+        $email = User::where('id', '=', $request->id_user)->get();
+
+        $create = Mail::insert([
+            ['id_user' => $request->id_user, 
+            'to_mail' => $request->to_mail,
+            'subject' => $request->to_mail,
+            'text' => $request->text],
+        ]);
+        $headers = "From:" . $email[0]->email;
+        // mail($request->to_mail,$request->subject,$request->text, $headers);
+
+        return redirect()->route('mail.index')
+        ->with('success', 'User created successfully.');
+
     }
 
     /**

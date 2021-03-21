@@ -18,7 +18,7 @@ class CreateMail extends Migration
             $table->string('to_mail', 100)->nullable(false);
             $table->string('subject', 100)->nullable(false);
             $table->string('text')->default('');
-            $table->boolean('status')->nullable(false)->default(false);
+            $table->integer('status')->nullable(false)->default(0);
             $table->timestamps();
 
             $table->unsignedBigInteger('id_user');

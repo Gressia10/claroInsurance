@@ -28,26 +28,27 @@
             <strong>{{$data->message}}</strong> 
         </div>
     @endif
-    <form action="/admin" method="POST" >
+    <form action="/mail" method="POST" >
         @csrf
 
         <div class="row">
+            <input type="hidden" name="id_user" class="form-control" placeholder="Id" value={{Auth::user()->id}} required autocomplete="To">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <strong>To:</strong>
-                    <input type="text" name="to" class="form-control" placeholder="To" required autocomplete="To">
+                    <input type="email" name="to_mail" class="form-control" placeholder="To" required autocomplete="To">
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <strong>Subject:</strong>
-                    <input id="subject" type="text" placeholder="Subject" name="email" value="{{ old('email') }}" required autocomplete="subject">
+                    <input id="subject" type="text" placeholder="Subject" class="form-control" name="subject" " required autocomplete="subject">
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <strong>Message:</strong>
-                    <textarea class="form-control" style="height:50px" name="introduction"
+                    <textarea class="form-control" style="height:50px" id="text" name="text"
                     placeholder="Message"></textarea>
                 </div>
             </div>
