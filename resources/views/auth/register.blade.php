@@ -71,7 +71,6 @@
                         </div>
 
                         <div class="form-group row">
-                        {{date('Y')-18}}-{{date('m-d')}}
                             <label  min="1900-01-01" max="{{date ('Y-m-d', strtotime ('-18 years'))}}" class="col-md-4 col-form-label text-md-right" >{{ __('Your Date of Birth') }}</label>
                             <div class="col-md-6">
                                 <input id="date" type="date" class="" name="date" required autocomplete="Your Date of Birth">

@@ -68,7 +68,11 @@
                 <td>{{$user->email}}</td>
                 <td>{{$user->number}}</td>
                 <td>{{$user->ci}}</td>
-                <td>{{$user->date}}</td>
+                @if($user->date > 0)
+                    <td>{{date ('Y')-(date("Y", strtotime($user->date)))}}</td>
+                @else
+                    <td></td>
+                @endif
                 <td>
                     <form action="{{ url('admin/'. $user->id) }}" method="POST">
 
