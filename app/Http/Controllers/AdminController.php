@@ -45,16 +45,23 @@ class AdminController extends Controller
     {
         $user = DB::table('users')
             ->where('email', '=', $request->email)
-            ->where('password', '=', Hash::make($request->password))
             ->where('type', '=', '1' )
-            ->get();
-
+            ->first();
         if($user){
-            return redirect()->route('admin.index');
+            $hashedPassword = $user -> password;
+            if(Hash::check($request->password, $hashedPassword)){
+                return redirect()->route('admin.index');
+            }else{
+                return response()->json([
+                    'status' => '0',
+                    'menssage'=>'User or password invalid'
+                ]); 
+            }
+            
         }else{
             return response()->json([
                 'status' => '0',
-                'menssage'=>'User or password invalid'
+                'menssage'=>'The user does not exist or is not an administrator'
             ]);
         }
 
@@ -105,7 +112,15 @@ class AdminController extends Controller
                 $data -> message="The password must have at least one number, one shift letter and one minuscule letter with minimum 6";
                 return view('admin.create', compact('data'));
             }else{
-                User::create($request->all());
+                $hash = Hash::make($request->password);
+                $create = User::insert([
+                    'name' => $request->name,
+                    'password' => $hash,
+                    'email' => $request->email,
+                    'date' => $request->date,
+                    'number' => $request->number,
+                    'ci' => $request->ci
+                ]);
                 return redirect()->route('admin.index')
                 ->with('success', 'User created successfully.');
             }   
