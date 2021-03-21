@@ -16,7 +16,7 @@ class MailController extends Controller
      */
     public function index()
     {
-        $mails = DB::table('mail')->orderBy('mail.id')->offset(0)->limit(10)
+        $mails = DB::table('mail')->orderBy('mail.id')
         ->join('users', 'mail.id_user', '=', 'users.id')
         ->select('mail.*', 'users.email')
         ->get();
@@ -29,7 +29,7 @@ class MailController extends Controller
     public function search(Request $request)
     {
         $offset = ($request->page-1)*10;
-        $mails = DB::table('mails')->offset($offset)->limit(10)
+        $mails = DB::table('mails')
         ->join('users', 'mail.id_user', '=', 'users.id')
         ->select('mail.*', 'users.email')
         ->get();
